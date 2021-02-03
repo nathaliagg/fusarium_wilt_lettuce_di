@@ -8,6 +8,7 @@ MetaboDirect pipeline/notebooks for my Fusarium wilt of Lettuce project.
 - [2 - Main objectives of direct infusion](#2---main-objectives-of-direct-infusion)
 - [3 - How to run the pipeline](#3---how-to-run-the-pipeline)
 - [4 - Main findings and future directions](#4---main-findings-and-future-directions)
+- [References](#references)
 
 ---
 ## 1 - Project overview
@@ -20,7 +21,7 @@ This pathogen is seed- and soilborne, and infects lettuce plants by penetrating 
 Metabolomics is a fast-emerging technology in life sciences research that remains relatively untapped in agriculture and breeding programs. Fourier transform Ion Cyclotron Resonance mass spectrometry (FTICR-MS) by direct infusion in untargeted approach is a high-throughput metabolomics technique in which samples are injected directly into the ionization source of the mass spectrometer. This technique allows samples to be fully processed within minutes. The ultra-high mass accuracy and resolving power of FTICR instruments allows for molecular formula assignment on thousands of peaks in each mass spectrum.
 
 
-Our main goal was to demonstrate the capabilities of direct infusion FTICR-MS in agriculture by profiling the metabolome of two healthy and infected lettuce cultivars, a susceptible and a tolerant cultivars.
+We are developing this project in collaboration with Dr. Barry Pryor (University of Arizona). Our main goal was to demonstrate the capabilities of direct infusion FTICR-MS in agriculture by profiling the metabolome of two healthy and infected lettuce cultivars, a susceptible and a tolerant cultivars.
 
 
 The image below shows the experiment setup, and shows me at work!
@@ -33,20 +34,20 @@ Disease development in the susceptible cultivar. At 14 days post inoculation, pl
 ---
 ## 2 - Main objectives of direct infusion
 
-Untargeted direct infusion (DI) mass spectrometry is a metabolomics technique for bulk metabolite characterization because of the high-throughput capabilities. FTICR instruments are ultra-high resolution and mass accuracy, which allows for the detection of a greater number of metabolites with similar masses compared to other lower resolution instruments.
+Untargeted direct infusion (DI) mass spectrometry is a metabolomics technique for bulk metabolite characterization because of the **high-throughput** capabilities. FTICR instruments are ultra-high resolution and mass accuracy, which allows for the detection of a greater number of metabolites with similar masses compared to other lower resolution instruments.
 
 DI techniques are used for **bulk characterization** of compounds, and comparing the metabolite fingerprinting across samples. DI is not reliable for structural characterization of a few compounds.
 
-In our untargeted DI studies, peaks detected in the mass spectrometer are assignned a candidate molecular formula by softwares such as Formularity []. Subsequently, we calculate several molecular ratios and indices that assign a candidate class (e.g., carbohydrate, lipid, lignin) to these compounds, which then allows us to make comparisons across samples.
+In our untargeted DI studies, peaks detected in the mass spectrometer are assignned a candidate molecular formula by softwares such as Formularity (Tolić et al., 2017). Subsequently, we calculate several molecular ratios and indices that assign a candidate class (e.g., carbohydrate, lipid, lignin) to these compounds, which then allows us to make comparisons across samples.
 
-We face great challenges in the identification of compounds in DI by FTICR approaches, particularly in environmental studies and studies of non-model organisms because a lot of these metabolites are "known unknowns and unknowns unknowns" [].
+We face great challenges in the identification of compounds in DI by FTICR approaches, particularly in environmental studies and studies of non-model organisms because a lot of these metabolites are "known unknowns and unknowns unknowns" (Peisl et al., 2018).
 
 ---
 ## 3 - How to run the pipeline
 
 1. After samples were scanned in FTICR instrument in negative mode, spectrum for each sample was exported to `.xml`. In very simplistic terms, these data contain a list of numbers, which are the mass over charge ratio (m/z) of each metabolite detected by the mass spectrometer.
 
-2. Formularity [] was used to assign a molecular formula to these m/z values, and we normally only consider the following elements: CHONSP. Formularity is a GUI open-source software that is only available for Windows OS, which makes reproducibility and automation difficult. The output data from Formularity is a table that contains the m/z, molecular formula, error in ppm of the molecular formula assignment, and the raw intensity values across samples. This is the datafile used in this analysis pipeline.
+2. Formularity was used to assign a molecular formula to these m/z values, and we normally only consider the following elements: CHONSP. Formularity is a GUI open-source software that is only available for Windows OS, which makes reproducibility and automation difficult. The output data from Formularity is a table that contains the m/z, molecular formula, error in ppm of the molecular formula assignment, and the raw intensity values across samples. This is the datafile used in this analysis pipeline.
 
 3. **Pipeline starts here**
 
@@ -87,7 +88,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
     4. R markdown file for [Multivariate statistics](./4_Statistics.Rmd)
 
-        In this pipeline, I ran two multivariate analyses: NMDS and PERMANOVA using the vegan R package (Jari Oksanen et al., 2019).
+        In this pipeline, I ran two multivariate analyses: NMDS and PERMANOVA using the vegan R package (Oksanen et al., 2019).
 
         ![NMDS](./images/nmds_root.png)
         **NMDS is an ordination technique that is performed on a dissimilarity matrix, and does not have any underlying assumptions on the data like linear relationship**
@@ -121,3 +122,14 @@ This was our first experiment with plants, and there are many things to improve 
 3. For future experiments, we have to adapt the current root inoculation protocol to not chop half of the root system. In the susceptible cultivar, the root system collapse was very severe at 14 dpi, and yielded less than 0.5 g of root system for plant extraction, which is a problem.
 
 4. Assumptions about metabolite pathways are very limited in DI experiments. We did a preliminary LC-MS/MS run, and it looks more promising than DI in determining differences amongst cultivars.
+
+---
+## References
+
+Oksanen, J. et al. (2019). vegan: Community Ecology Package (R package version 2.5-6) [Computer software]. https://CRAN.R-project.org/package=vegan
+
+LaRowe, D. E., & Van Cappellen, P. (2011). Degradation of natural organic matter: A thermodynamic analysis. Geochimica et Cosmochimica Acta, 75(8), 2030–2042. https://doi.org/10.1016/j.gca.2011.01.020
+
+Peisl, B. Y. L., Schymanski, E. L., & Wilmes, P. (2018). Dark matter in host-microbiome metabolomics: Tackling the unknowns–A review. Analytica Chimica Acta, 1037, 13–27. https://doi.org/10.1016/j.aca.2017.12.034
+
+Tolić, N., Liu, Y., Liyu, A., Shen, Y., Tfaily, M. M., Kujawinski, E. B., … Hess, N. J. (2017). Formularity: Software for automated formula assignment of natural and other organic matter from ultrahigh‐resolution mass spectra. Analytical Chemistry, 89, 12659– 12665.
