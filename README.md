@@ -102,6 +102,13 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
         I then ran a PERMANOVA to find out which factors are driving the most these differences among samples. Time and cultivar were significant factors driving approximately 7.7% and 13.5% of the differences observes in the dataset, respectively.
 
+
+**Preliminary conclusions**
+DI technique has many limitations in regards to the assumptions of metabolites it is able to detect, meaning that we are limited to a molecular formula assignment, and there is not much biological information we can draw from there (i.e., pathways).
+
+The PERMANOVA analysis picked up significant differences between cultivars and time better than the separation by NMDS. This demonstrate the potential of DI for metabolic fingerprinting of different cultivars and disease development overtime.
+
+
 ---
 ## 4 - Main findings and future directions
 
@@ -113,4 +120,4 @@ This was our first experiment with plants, and there are many things to improve 
 
 3. For future experiments, we have to adapt the current root inoculation protocol to not chop half of the root system. In the susceptible cultivar, the root system collapse was very severe at 14 dpi, and yielded less than 0.5 g of root system for plant extraction, which is a problem.
 
-4. Assumptions about metabolite pathways are limited in DI experiments. We did a preliminary LC-MS/MS run, and it looks more promising than DI in determining differences amongst cultivars.
+4. Assumptions about metabolite pathways are very limited in DI experiments. We did a preliminary LC-MS/MS run, and it looks more promising than DI in determining differences amongst cultivars.
