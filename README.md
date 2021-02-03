@@ -20,10 +20,13 @@ This pathogen is seed- and soilborne, and infects lettuce plants by penetrating 
 Metabolomics is a fast-emerging technology in life sciences research that remains relatively untapped in agriculture and breeding programs. Fourier transform Ion Cyclotron Resonance mass spectrometry (FTICR-MS) by direct infusion in untargeted approach is a high-throughput metabolomics technique in which samples are injected directly into the ionization source of the mass spectrometer. This technique allows samples to be fully processed within minutes. The ultra-high mass accuracy and resolving power of FTICR instruments allows for molecular formula assignment on thousands of peaks in each mass spectrum.
 
 
-Our main goal was to demonstrate the capabilities of direct infusion FTICR-MS in agriculture by profiling the metabolome of two healthy and infected lettuce cultivars (Raider, susceptible, and Meridiam, tolerant).
+Our main goal was to demonstrate the capabilities of direct infusion FTICR-MS in agriculture by profiling the metabolome of two healthy and infected lettuce cultivars, a susceptible and a tolerant cultivars.
 
+
+The image below shows the experiment setup, and shows me at work!
 ![Experiment setup](./images/experiment_setup.png)
 
+Disease development in the susceptible cultivar. At 14 days post inoculation, plant stunting and decline were evident. In addition, root system is severely compromised (root rot).
 ![Disease](./images/disease_progress.png)
 
 
@@ -47,7 +50,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
 3. Ready for MetaboDiret:
 
-    3.1 - Jupyter notebook [1_Preprocessing](./1_Preprocessing.ipynb).
+    1. Jupyter notebook [1_Preprocessing](./1_Preprocessing.ipynb).
 
         The output from Formularity is a file called `Report.csv`. It's important to work with the output file from Formularity as is.
 
@@ -61,7 +64,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
             - Calculate a summary output of median and weighted mean of indices per sample
             - Make matrix for downstream analyses
 
-    3.2 - Jupyter notebook [2_Diagnostics](./2_Diagnostics.ipynb)
+    2. Jupyter notebook [2_Diagnostics](./2_Diagnostics.ipynb)
 
         It's important to assess data quality at this point. Here, I demonstrate how to assess the mean number of molecular formula across samples, and the error range with and without applying error correction.
 
@@ -74,11 +77,11 @@ We face great challenges in the identification of compounds in DI by FTICR appro
         ![Error](./images/error_distribution_per_sample.png)
 
 
-    3.3 - R markdown file for [Exploratory analysis](./3_Exploratory.Rmd)
+    3. R markdown file for [Exploratory analysis](./3_Exploratory.Rmd)
 
 
 
-    3.4 - R markdown file for [Multivariate statistics](./4_Statistics.Rmd)
+    4. R markdown file for [Multivariate statistics](./4_Statistics.Rmd)
 
 
 ---
