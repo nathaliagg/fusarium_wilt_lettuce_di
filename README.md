@@ -48,7 +48,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
 2. Formularity [] was used to assign a molecular formula to these m/z values, and we normally only consider the following elements: CHONSP. Formularity is a GUI open-source software that is only available for Windows OS, which makes reproducibility and automation difficult. The output data from Formularity is a table that contains the m/z, molecular formula, error in ppm of the molecular formula assignment, and the raw intensity values across samples. This is the datafile used in this analysis pipeline.
 
-3. Ready for MetaboDiret:
+3. **Pipeline starts here**
 
     1. Jupyter notebook [1_Preprocessing](./1_Preprocessing.ipynb).
 
@@ -69,24 +69,45 @@ We face great challenges in the identification of compounds in DI by FTICR appro
         It's important to assess data quality at this point. Here, I demonstrate how to assess the mean number of molecular formula across samples, and the error range with and without applying error correction.
 
         ![Formulas](./images/stats_formula_per_sample.png)
+        *Average count of molecular count assignment across samples*
+
+        ![Error](./images/error_distribution_per_sample.png)
+        *Mean (corrected) error distribution of across samples*
 
         I expected to see a more even molecular formula assignment across samples because. This can come chomp my derrière later...
 
          This can reveal issues with extraction protocol, instrument biases, data acquisition problems like accumulation time in the instrument.
 
-        ![Error](./images/error_distribution_per_sample.png)
-
-
     3. R markdown file for [Exploratory analysis](./3_Exploratory.Rmd)
 
+        One of the calculations performed was Gibbs free energy (ΔG°C-ox in kJ/mol of carbon, i.e., GFE), which is an indicator of thermodynamic bioavailableavailability of compounds. Lower GFE values indicate more bioavailable compounds, e. g., sugars and carbohydrates, and higher GFE values indicate more recalcitrant compounds, e. g., lignin (LaRowe & Van Cappellen, 2011).
 
+        ![GFE](./images/density_GFE_root.png)
+        **GFE distribution on roots. Slight shift in GFE in inoculated plants at 14 dpi in that susceptible cultivars shows a slight lower GFE compared to the tolerant cultivar. A higher GFE in the tolerant cultivar could be an indication of higher lignin production, which is a known marker for disease resistance of pathogens that colonize the vasculature.**
 
     4. R markdown file for [Multivariate statistics](./4_Statistics.Rmd)
 
+        In this pipeline, I ran two multivariate analyses: NMDS and PERMANOVA using the vegan R package (Jari Oksanen et al., 2019).
+
+        ![NMDS](./images/nmds_root.png)
+        **NMDS is an ordination technique that is performed on a dissimilarity matrix, and does not have any underlying assumptions on the data like linear relationship**
+
+        In the NMDS, I ran all root samples together, but I decided to facet the plot to make visualizations easier. The separation observed in the NMDS is not great. I am still investigating why almost all tolerant lettuce samples are clumped. Looking at the susceptible, there seems to be a slight trend in trend (14 dpi towards the left, and 7 dpi towards the right).
+
+        |               | Df  | F. Model |  R2   | Pr(>F) |  
+        | :-------      | :-- | :------- | :---- | :----- |  
+        | Time          |  1  |   1.328  | 0.043 |  0.182 |   
+        | Treatment     |  1  |   2.378  | 0.077 |  0.005 **|    
+
+        I then ran a PERMANOVA to find which factors are driving the most these differences amongst samples, and Time was a significant factor driving approximately 7.7% of the differences observes in the dataset.
 
 ---
 ## 4 - Main findings and future directions
 
-There are many things that I need to improve here, but here are a few key ones that I am actively working on:
+This was our first experiment with plants, and there are many things to improve here including:
 
-1.
+1. Improve our mass spectrometer method. We had a method that works well for negative mode accquisition of soil organic matter, and perhaps that is not the most appropriate method for plant metabolites.
+
+2. These samples were scanned a few weeks apart (the holidays were in the middle... yes, postdocs take vacations too), and we suspect there were significant variances and/or inconsistencies with the instrument during that time.
+
+3. For future experiments, we have to adapt the current root inoculation protocol to not chop half of the root system. In the susceptible cultivar, the root system collapse was very severe at 14 dpi, and yielded less than 0.5 g of root system for plant extraction, which is a problem.
