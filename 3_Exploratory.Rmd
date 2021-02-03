@@ -1,0 +1,192 @@
+---
+title: "3 Exploratory"
+author: "Nathalia Graf Grachet"
+date: "2/2/2021"
+output: html_document
+---
+
+
+# 1 - Import libraries
+
+
+```{r libraries, echo=F}
+library(tidyverse)
+library(ggplot2)
+source('functions_exploratory.R')
+```
+
+
+# 2 - Import necessary data
+
+
+```{r pathVariables}
+# set path variables
+project_name = 'MetaboDirect'
+preprocess_dir = '1_preprocessing_output'
+exploratory_dir = '3_exploratory'
+metadata_filename = 'metadata.csv'
+```
+
+```{r data}
+# dataframe GFE, NOSC
+data_file = file.path(project_name, preprocess_dir, 'Report_processed_MolecFormulas.csv')
+df <-  read.csv(data_file)
+
+# metadata
+metadata <- read.csv(metadata_filename)
+
+# class composition
+cc_file = file.path(project_name, preprocess_dir, 'class_composition.csv')
+class_comp <- read.csv(cc_file)
+class_comp <- as.data.frame(class_comp %>% 
+    pivot_longer(
+        !SampleID, names_to = 'Class', values_to = 'Count'
+    ))
+class_comp <- merge(class_comp, metadata, by='SampleID')
+class_comp$Class <- gsub("\\.", " ", class_comp$Class)
+
+
+# elemental composition
+el_file = file.path(project_name, preprocess_dir, 'elemental_composition.csv')
+el_comp <- read.csv(el_file)
+el_comp <- as.data.frame(el_comp %>% 
+    pivot_longer(
+        !SampleID, names_to = 'Element', values_to = 'Count'
+    ))
+el_comp <- merge(el_comp, metadata, by='SampleID')
+el_comp$Element <- gsub("\\.", " ", el_comp$Element)
+
+```
+
+```{r dfPrep}
+sample_ids = get_list_samples(df)
+
+df_longer <- as.data.frame(pivot_longer(
+    df, cols = all_of(sample_ids), names_to = "SampleID", values_to = "NormIntensity"
+))
+
+df_longer <- df_longer %>% 
+    filter(NormIntensity > 0)
+
+df_longer <- merge(df_longer, metadata, by = 'SampleID')
+
+# set factor levels
+df_longer$Cultivar <- factor(df_longer$Cultivar, levels = c('Fungus', 'Susceptible', 'Tolerant'))
+df_longer$Time <- factor(df_longer$Time, levels = c("7 dpi", "10 dpi", "14 dpi"))
+```
+
+
+# 3 - van Krevlen diagrams
+
+
+```{r vK_gfe}
+s=10; h=6; w=10; res=300
+
+vk_root_gfe <- df_longer %>%
+    filter((Tissue == 'root') & (Time %in% c('7 dpi', '14 dpi'))) %>% 
+    vk_function(., OC, HC, 'Root', GFE, s) +
+    facet_grid(Time ~ Cultivar + Treatment)
+
+filename <- file.path(project_name, exploratory_dir, 'vanKrevlen_GFE_root.png')
+ggsave(filename, width=w, height=h, dpi=res, vk_root_gfe)
+
+
+vk_leaf_gfe <- df_longer %>% 
+    filter((Tissue == 'leaf') & (Time %in% c('7 dpi', '14 dpi'))) %>% 
+    vk_function(., OC, HC, 'Leaf', GFE, s) +
+    facet_grid(Time ~ Cultivar + Treatment) 
+
+filename <- file.path(project_name, exploratory_dir, 'vanKrevlen_GFE_leaf.png')
+ggsave(filename, width=w, height=h, dpi=res, vk_leaf_gfe)
+```
+
+
+# 4 - GFE Density
+
+
+```{r density}
+s=10; h=4; w=8; res=300
+
+list_colors <- c('Susceptible' = "#E9967A", 'Tolerant' = '#20B2AA')
+
+den_root_gfe <- df_longer %>% 
+    filter((Tissue == 'root') & (Time %in% c('7 dpi', '14 dpi'))) %>% 
+    density_function(., GFE, 'Root', Cultivar, s, list_colors) +
+    facet_grid(Time ~ Treatment)
+    
+filename <- file.path(project_name, exploratory_dir, 'density_GFE_root.png')
+ggsave(filename, width=w, height=h, dpi=res, den_root_gfe)
+
+den_leaf_gfe <- df_longer %>% 
+    filter((Tissue == 'leaf') & (Time %in% c('7 dpi', '14 dpi'))) %>% 
+    density_function(., GFE, 'Leaf', Cultivar, s, list_colors) +
+    facet_grid(Time ~ Treatment) 
+
+filename <- file.path(project_name, exploratory_dir, 'density_GFE_leaf.png')
+ggsave(filename, width=w, height=h, dpi=res, den_leaf_gfe)
+```
+
+
+# 5 - GFE violin
+
+
+```{r violin}
+s=10; h=4; w=8; res=300
+list_colors <- c('root' = "#B8860B", 'leaf' = '#20B2AA')
+
+v_gfe_s <- df_longer %>%
+    filter((Tissue %in% c('root', 'leaf')) & 
+           (Time %in% c('7 dpi', '14 dpi')) &
+           (Cultivar == 'Susceptible')) %>% 
+    violin_function(., Tissue, GFE, Tissue, 'Susceptible', s, list_colors) +
+    facet_grid(Time ~ Treatment) 
+
+filename <- file.path(project_name, exploratory_dir, 'violin_GFE_susceptible.png')
+ggsave(filename, width=w, height=h, dpi=res, v_gfe_s)
+
+v_gfe_t <- df_longer %>% 
+    filter((Tissue %in% c('root', 'leaf')) & 
+           (Time %in% c('7 dpi', '14 dpi')) &
+           (Cultivar == 'Tolerant')) %>% 
+    violin_function(., Tissue, GFE, Tissue, 'Tolerant', s, list_colors) +
+    facet_grid(Time ~ Treatment) 
+
+filename <- file.path(project_name, exploratory_dir, 'violin_GFE_tolerant.png')
+ggsave(filename, width=w, height=h, dpi=res, v_gfe_t)
+```
+
+
+# 6 - Barplot class composition
+
+
+```{r barClass}
+s=10; h=4; w=8; res=300
+
+barclass <- class_comp %>% 
+    filter((Tissue %in% c('root', 'leaf')) & 
+           (Time %in% c('7 dpi', '14 dpi')) &
+           (Class != 'Other')) %>% 
+    group_by(Cultivar, Tissue, Time, Names, Class) %>% 
+    summarise(Count = mean(Count)) %>% 
+    bar_function(., Names, Count, Class, s, "Dark2") +
+    facet_wrap(~Tissue, scales = "free_y")
+
+filename <- file.path(project_name, exploratory_dir, 'class_composition.png')
+ggsave(filename, width=w, height=h, dpi=res, barclass)
+
+barelem <- el_comp %>%
+    filter((Tissue %in% c('root', 'leaf')) & 
+           (Time %in% c('7 dpi', '14 dpi'))) %>% 
+    group_by(Cultivar, Tissue, Time, Names, Element) %>% 
+    summarise(Count = mean(Count)) %>% 
+    bar_function(., Names, Count, Element, s, "Set2") +
+    facet_wrap(~Tissue, scales = "free_y")
+
+filename <- file.path(project_name, exploratory_dir, 'element_composition.png')
+ggsave(filename, width=w, height=h, dpi=res, barelem)
+```
+
+
+
+
+

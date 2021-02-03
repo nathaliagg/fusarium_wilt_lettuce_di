@@ -1,0 +1,201 @@
+---
+title: "4 - Statistics"
+author: "Nathalia Graf Grachet"
+date: "2/2/2021"
+output: html_document
+---
+
+
+# 1 - Libraries
+
+
+```{r libraries}
+library(tidyverse)
+library(vegan)
+library(factoextra)
+library(ggrepel)
+library(ggnewscale)
+library(patchwork)
+source('functions_statistics.R')
+```
+
+
+# 2 - Import necessary data
+
+
+```{r pathVariables}
+# set path variables
+project_name = 'MetaboDirect'
+preprocess_dir = '1_preprocessing_output'
+stats_dir = '4_statistics'
+metadata_filename = 'metadata.csv'
+```
+
+```{r data}
+# matrix of features/sample
+matrix_file = file.path(project_name, preprocess_dir, 'matrix_features.csv')
+df <-  read.csv(matrix_file, row.names = 1)
+df <- as.data.frame(t(df))
+df[is.na(df)] <- 0
+
+# metadata
+metadata <- read.csv(metadata_filename)
+```
+
+
+# 3 - NMDS - Root, 7 and 14 dpi
+
+
+```{r nmdsRoot}
+matrix <- get_target_samples(df, metadata, SampleID, Tissue, "in", "root")
+matrix <- get_target_samples(matrix, metadata, SampleID, Time, "out", "10 dpi")
+
+## Converting absolute abundance to either relative abundance or presence/absence
+## Relative abundance use method "total"
+## For presence/absence transformation use method "pa"
+trans = "pa"
+t.matrix <- decostand(matrix, trans) 
+
+## Calculate distance matrix
+## Use "bray" for relative abundance
+## Use "jaccard for presence/absence
+dm.method = "euclidean"
+dist.matrix <- vegdist(t.matrix , method = dm.method) # dist matrix
+
+set.seed(123)
+nmds <- make_nmds(dist.matrix, dm.method)
+
+# **A good rule of thumb: 
+# < 0.05 provides an excellent representation in reduced dimensions, 
+# < 0.1 is great, 
+# < 0.2 is good/ok, 
+# < 0.3 provides a poor representation.** 
+
+stressplot(nmds)
+
+nmds.scores <- as.data.frame(scores(nmds))
+nmds.scores$SampleID <- rownames(nmds.scores)
+nmds.scores <- merge(nmds.scores, metadata, by = 'SampleID')
+
+list_colors <- c("healthy" = "#228B22", "inoculated" = "#C71585")
+
+p.size = 2; size = 10; h=4; w=8; res=300
+
+nmds_root <- nmds_plot(nmds.scores, NMDS1, NMDS2, Treatment, Treatment, Time, size, p.size) +
+  facet_wrap(~Cultivar) +
+  ggtitle("Root") +
+  scale_color_manual(values=list_colors) +
+  theme(
+    strip.text=element_text(face="bold"),
+    strip.background = element_rect(fill="white", colour="white"),
+  )
+
+filename <- file.path(project_name, stats_dir, 'nmds_root.png')
+ggsave(filename, width=w, height=h, dpi=res, nmds_root)
+```
+
+
+
+# 4 - PERMANOVA - Root, 7 and 14 dpi
+
+
+```{r permanovaRoot}
+set.seed(456)
+# using the matrix from the ccell below above!!!!!
+
+subset_metadata <- metadata %>% 
+  filter(SampleID %in% rownames(matrix))
+
+# t.matrix <- as.data.frame(t(matrix))
+dm.method = "bray"
+dist.matrix <- vegdist(matrix , method = dm.method) # dist matrix
+
+permanova <- adonis(dist.matrix ~ Treatment + Time, 
+                    data=subset_metadata, 
+                    permutations=999, 
+                    method=dm.method)
+permanova
+
+filename <- file.path(project_name, stats_dir, 'permanova_root.csv')
+write.csv(as.data.frame(permanova$aov.tab), filename)
+```
+
+
+# 5 - NMDS - Leaf, 7 and 14 dpi
+
+
+```{r nmdsLeaf}
+matrix <- get_target_samples(df, metadata, SampleID, Tissue, "in", "leaf")
+matrix <- get_target_samples(matrix, metadata, SampleID, Time, "out", "10 dpi")
+
+## Converting absolute abundance to either relative abundance or presence/absence
+## Relative abundance use method "total"
+## For presence/absence transformation use method "pa"
+trans = "pa"
+t.matrix <- decostand(matrix, trans) 
+
+## Calculate distance matrix
+## Use "bray" for relative abundance
+## Use "jaccard for presence/absence
+dm.method = "euclidean"
+dist.matrix <- vegdist(t.matrix , method = dm.method) # dist matrix
+
+set.seed(123)
+nmds <- make_nmds(dist.matrix, dm.method)
+
+# **A good rule of thumb: 
+# < 0.05 provides an excellent representation in reduced dimensions, 
+# < 0.1 is great, 
+# < 0.2 is good/ok, 
+# < 0.3 provides a poor representation.** 
+
+stressplot(nmds)
+
+nmds.scores <- as.data.frame(scores(nmds))
+nmds.scores$SampleID <- rownames(nmds.scores)
+nmds.scores <- merge(nmds.scores, metadata, by = 'SampleID')
+
+list_colors <- c("healthy" = "#228B22", "inoculated" = "#C71585")
+
+p.size = 2; size = 10; h=4; w=8; res=300
+
+nmds_leaf <- nmds_plot(nmds.scores, NMDS1, NMDS2, Treatment, Treatment, Time, size, p.size) +
+  facet_wrap(~Cultivar) +
+  ggtitle("Leaf") +
+  scale_color_manual(values=list_colors) +
+  theme(
+    strip.text=element_text(face="bold"),
+    strip.background = element_rect(fill="white", colour="white"),
+  )
+
+filename <- file.path(project_name, stats_dir, 'nmds_leaf.png')
+ggsave(filename, width=w, height=h, dpi=res, nmds_leaf)
+```
+
+
+# 6 - PERMANOVA - Leaf, 7 and 14 dpi
+
+
+```{r}
+set.seed(456)
+# using the matrix from the ccell below above!!!!!
+
+subset_metadata <- metadata %>% 
+  filter(SampleID %in% rownames(matrix))
+
+# t.matrix <- as.data.frame(t(matrix))
+dm.method = "bray"
+dist.matrix <- vegdist(matrix , method = dm.method) # dist matrix
+
+permanova <- adonis(dist.matrix ~ Treatment + Time, 
+                    data=subset_metadata, 
+                    permutations=999, 
+                    method=dm.method)
+permanova
+
+filename <- file.path(project_name, stats_dir, 'permanova_leaf.csv')
+write.csv(as.data.frame(permanova$aov.tab), filename)
+```
+
+
+
