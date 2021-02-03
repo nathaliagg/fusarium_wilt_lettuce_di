@@ -4,10 +4,10 @@ MetaboDirect pipeline/notebooks for my Fusarium wilt of Lettuce project.
 
 # Content
 
-- [1 - Project overview](#1---project_overview)
-- [2 - Main objectives of direct infusion](#2---main_objectives_of_direct_infusion)
-- [3 - How to run the pipeline](#3---how_to_run_the_pipeline)
-- [4 - Main findings and future directions](#4---main_findings_and_future_directions)
+- [1 - Project overview](#1---project-overview)
+- [2 - Main objectives of direct infusion](#2---main-objectives-of-direct-infusion)
+- [3 - How to run the pipeline](#3---how-to-run-the-pipeline)
+- [4 - Main findings and future directions](#4---main-findings-and-future-directions)
 
 ---
 ## 1 - Project overview
@@ -21,6 +21,10 @@ Metabolomics is a fast-emerging technology in life sciences research that remain
 
 
 Our main goal was to demonstrate the capabilities of direct infusion FTICR-MS in agriculture by profiling the metabolome of two healthy and infected lettuce cultivars (Raider, susceptible, and Meridiam, tolerant).
+
+![Experiment setup](./images/experiment_setup.png)
+
+![Disease](./images/disease_progress.png)
 
 
 ---
@@ -43,7 +47,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
 3. Ready for MetaboDiret:
 
-    1. Jupyter notebook [1_Preprocessing](./1_Preprocessing.ipynb).
+    3.1 - Jupyter notebook [1_Preprocessing](./1_Preprocessing.ipynb).
 
         The output from Formularity is a file called `Report.csv`. It's important to work with the output file from Formularity as is.
 
@@ -57,7 +61,7 @@ We face great challenges in the identification of compounds in DI by FTICR appro
             - Calculate a summary output of median and weighted mean of indices per sample
             - Make matrix for downstream analyses
 
-    2. Jupyter notebook [2_Diagnostics](./1_Diagnostics.ipynb)
+    3.2 - Jupyter notebook [2_Diagnostics](./2_Diagnostics.ipynb)
 
         It's important to assess data quality at this point. Here, I demonstrate how to assess the mean number of molecular formula across samples, and the error range with and without applying error correction.
 
@@ -67,9 +71,19 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
          This can reveal issues with extraction protocol, instrument biases, data acquisition problems like accumulation time in the instrument.
 
-        ![Error](./images/error_ditribution_per_sample.png)
+        ![Error](./images/error_distribution_per_sample.png)
 
+
+    3.3 - R markdown file for [Exploratory analysis](./3_Exploratory.Rmd)
+
+
+
+    3.4 - R markdown file for [Multivariate statistics](./4_Statistics.Rmd)
 
 
 ---
 ## 4 - Main findings and future directions
+
+There are many things that I need to improve here, but here are a few key ones that I am actively working on:
+
+1.
