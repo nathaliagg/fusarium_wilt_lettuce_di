@@ -110,7 +110,7 @@ subset_metadata <- metadata %>%
 dm.method = "bray"
 dist.matrix <- vegdist(matrix , method = dm.method) # dist matrix
 
-permanova <- adonis(dist.matrix ~ Treatment + Time, 
+permanova <- adonis(dist.matrix ~ Treatment + Time + Cultivar, 
                     data=subset_metadata, 
                     permutations=999, 
                     method=dm.method)
@@ -187,7 +187,7 @@ subset_metadata <- metadata %>%
 dm.method = "bray"
 dist.matrix <- vegdist(matrix , method = dm.method) # dist matrix
 
-permanova <- adonis(dist.matrix ~ Treatment + Time, 
+permanova <- adonis(dist.matrix ~ Treatment + Time + Cultivar, 
                     data=subset_metadata, 
                     permutations=999, 
                     method=dm.method)

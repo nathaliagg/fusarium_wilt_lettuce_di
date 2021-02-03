@@ -96,10 +96,11 @@ We face great challenges in the identification of compounds in DI by FTICR appro
 
         |               | Df  | F. Model |  R2   | Pr(>F) |  
         | :-------      | :-- | :------- | :---- | :----- |  
-        | Time          |  1  |   1.328  | 0.043 |  0.182 |   
-        | Treatment     |  1  |   2.378  | 0.077 |  0.005 **|    
+        | Treatment     |  1  |   1.512  | 0.043 |  0.182 |   
+        | Time          |  1  |   2.708  | 0.077 |  0.003 \*\*|
+        | Cultivar      |  1  |   4.731  | 0.135 |  0.001 \*\*\*|    
 
-        I then ran a PERMANOVA to find which factors are driving the most these differences amongst samples, and Time was a significant factor driving approximately 7.7% of the differences observes in the dataset.
+        I then ran a PERMANOVA to find out which factors are driving the most these differences among samples. Time and cultivar were significant factors driving approximately 7.7% and 13.5% of the differences observes in the dataset, respectively.
 
 ---
 ## 4 - Main findings and future directions
@@ -111,3 +112,5 @@ This was our first experiment with plants, and there are many things to improve 
 2. These samples were scanned a few weeks apart (the holidays were in the middle... yes, postdocs take vacations too), and we suspect there were significant variances and/or inconsistencies with the instrument during that time.
 
 3. For future experiments, we have to adapt the current root inoculation protocol to not chop half of the root system. In the susceptible cultivar, the root system collapse was very severe at 14 dpi, and yielded less than 0.5 g of root system for plant extraction, which is a problem.
+
+4. Assumptions about metabolite pathways are limited in DI experiments. We did a preliminary LC-MS/MS run, and it looks more promising than DI in determining differences amongst cultivars.
